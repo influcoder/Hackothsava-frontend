@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -10,6 +10,9 @@ import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { networkRequest } from "../../utils/network_request";
+import { apiGeneral } from "../../utils/urls";
+import axios from "axios";
 
 // Custom styles for the dialog
 const DialogWrapper = styled(Dialog)({
@@ -61,11 +64,35 @@ const Separator = styled("div")({
 });
 
 function PodConfirm({ open, onClose, onJoin, onCreate }) {
-  const [podId, setPodId] = useState("");
+  const [uniqueCode, setUniqueCode] = useState("");
+  const [userId, setUserId] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const handleJoin = () => {
-    onJoin(podId);
-    setPodId("");
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("user_id");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
+
+  const handleJoin = async () => {
+    console.log("Attempting to join pod...");
+    setLoading(true);
+    try {
+      console.log("Sending request...");
+      const response = await axios.post(apiGeneral.joinPod, {
+        unique_code: uniqueCode,
+        user_id: userId,
+      });
+      console.log("Response received:", response.data);
+      onClose();
+    } catch (error) {
+      console.error("Error joining pod:", error);
+    } finally {
+      console.log("Request completed.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,8 +113,8 @@ function PodConfirm({ open, onClose, onJoin, onCreate }) {
             label="Enter Pod Code"
             variant="outlined"
             fullWidth
-            value={podId}
-            onChange={(e) => setPodId(e.target.value)}
+            value={uniqueCode}
+            onChange={(e) => setUniqueCode(e.target.value)}
             margin="normal"
           />
           <Box mt={2}>
@@ -95,8 +122,9 @@ function PodConfirm({ open, onClose, onJoin, onCreate }) {
               onClick={handleJoin}
               color="primary"
               variant="contained"
+              disabled={loading}
             >
-              Join Pod
+              {loading ? "Joining..." : "Join Pod"}
             </OptionButton>
             <Separator />
             <OptionButton
