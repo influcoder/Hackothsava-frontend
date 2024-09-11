@@ -1,13 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
 import Card from "./Card";
-import Menu from "./Menu";
+import PodConfirm from "../pods/PodConfirm";
+import AddIcon from "@mui/icons-material/Add";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import PersonIcon from "@mui/icons-material/Person";
 function Dashboard() {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleConfirm = () => {
+    console.log("Confirmed!");
+    // Add your confirmation logic here
+  };
+
   return (
     <div>
       <div className="dashboard">
-        <Menu />
+        <div className="menu-bar">
+          <div className="menu-item home">Home</div>
+          <div className="menu-right">
+            <AddIcon className="menu-item" onClick={handleOpen} />
+
+            <NotificationsIcon className="menu-item" />
+            <PersonIcon className="menu-item " />
+          </div>
+        </div>
+        <PodConfirm
+          open={open}
+          onClose={handleClose}
+          onConfirm={handleConfirm}
+        />
         <div className="dashboard-content">
           <div className="greetings">
             <h1>Hello User!</h1>
