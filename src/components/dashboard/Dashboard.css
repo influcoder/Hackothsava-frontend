@@ -1,0 +1,21 @@
+.dashboard-content {
+  margin: 100px;
+  color: whitesmoke;
+}
+.dashboard {
+  padding: 20px;
+}
+.greetings {
+  margin-bottom: 50px;
+}
+.pods {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 10%;
+}
+.view-more {
+  text-decoration: none;
+  color: whitesmoke;
+  float: right;
+}
