@@ -4,17 +4,28 @@ async function networkRequest(
   url,
   handleResponse,
   requestType = "get",
-  data = null
+  data = null,
+  isFileUpload = false, // Flag to indicate if the request is a file upload
+  customHeaders = {}
 ) {
+  // Set up headers
   const headers = {
     Authorization: localStorage.getItem("access_token") || "",
+    ...customHeaders,
   };
+
+  // Don't set Content-Type for file uploads, let browser handle it
+  if (isFileUpload) {
+    delete headers["Content-Type"];
+  } else {
+    headers["Content-Type"] = "application/json";
+  }
 
   try {
     let response;
 
+    // Execute the appropriate request based on type
     if (requestType.toLowerCase() === "post") {
-      headers["Content-Type"] = "application/json";
       response = await axios.post(url, data, { headers });
     } else if (requestType.toLowerCase() === "get") {
       const params =
@@ -30,7 +41,7 @@ async function networkRequest(
     }
 
     // Handle the response
-    if (response.data && response.data["success"]) {
+    if (response.data && response.data["status"] === "ok") {
       handleResponse(response.data);
     } else {
       console.error(
