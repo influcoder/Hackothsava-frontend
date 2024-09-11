@@ -19,9 +19,12 @@ export default function Login() {
       });
 
       console.log("Login successful:", response.data);
-      localStorage.setItem("access_token", response.data.token);
 
-      window.location.href = "/dashboard"; // Redirect to dashboard on successful login
+      // Store access token and user ID in localStorage
+      localStorage.setItem("access_token", response.data.token);
+      localStorage.setItem("user_id", response.data.user_id); // Store user_id in localStorage
+
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error("Login failed:", error);
 

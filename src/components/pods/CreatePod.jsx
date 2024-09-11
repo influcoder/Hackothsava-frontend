@@ -46,7 +46,7 @@ function CreatePod() {
   const [privacy, setPrivacy] = useState("public");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const userId = localStorage.getItem("user_id");
   const handleSubmit = async () => {
     setLoading(true);
     setError("");
@@ -58,6 +58,7 @@ function CreatePod() {
           pod_name: name,
           pod_description: description,
           is_public: privacy === "public",
+          created_by: userId,
         },
         {
           headers: {

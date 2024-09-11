@@ -4,6 +4,7 @@ const apiGeneral = {
   login: `${domain}/login`,
   signup: `${domain}/signup`,
   createPod: `${domain}/create`,
+  joinPod: `${domain}/join`,
 
   chats: `${domain}/messages/chats/`,
   send: `${domain}/messages/send`,
