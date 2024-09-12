@@ -3,7 +3,9 @@ import io from "socket.io-client";
 import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
 import { Avatar } from "@mui/material";
-
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 // Establish socket connection
 const socket = io("https://hackothsava-server.onrender.com");
 
@@ -13,17 +15,32 @@ export default function ChatContainer({ pod, isOpen }) {
   const [chatMessages, setChatMessages] = useState([]);
   const userId = localStorage.getItem("user_id");
   const messagesEndRef = useRef(null);
+  const navigate = useNavigate(); // Use the navigate hook
+  const navigate2 = useNavigate(); // Use the navigate hook
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   useEffect(() => {
     scrollToBottom();
   }, [chatMessages]);
 
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
+  };
+  const handleSubmission = () => {
+    navigate2("/submission");
+  };
+  const handleResource = () => {
+    navigate("/resource", {
+      state: {
+        podId: pod?._id,
+        podName: pod?.pod_name, // Include podName
+      },
+    }); // Use navigate instead of Navigate
   };
 
   // Function to fetch messages from the server (polling)
@@ -98,9 +115,7 @@ export default function ChatContainer({ pod, isOpen }) {
         .then(() => {
           setChatInput(""); // Clear input field after sending
         })
-        .catch((error) => {
-          console.error("Error sending message:", error);
-        });
+        .catch((error) => {});
     }
   };
 
@@ -233,6 +248,20 @@ export default function ChatContainer({ pod, isOpen }) {
           <span className="pod-description" style={styles.podDescription}>
             {pod.pod_description}
           </span>
+        </div>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button
+            style={{ backgroundColor: "#2d3e54", padding: "10px" }}
+            onClick={handleResource}
+          >
+            <FolderOpenIcon />
+          </button>
+          <button
+            style={{ backgroundColor: "#2d3e54", padding: "10px" }}
+            onClick={handleSubmission}
+          >
+            <PlaylistAddCheckIcon />
+          </button>
         </div>
       </div>
       <div className="chat-messages" style={styles.chatMessages}>

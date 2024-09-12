@@ -1,0 +1,50 @@
+/* Container for the Resource Page */
+.resource-page {
+  padding: 1.5rem;
+  background-color: #f4f4f9; /* Light gray background for the page */
+  min-height: 100vh; /* Ensure the page covers full viewport height */
+}
+
+/* Title Styling */
+.resource-page h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #007bff; /* Blue underline for emphasis */
+  padding-bottom: 0.5rem;
+}
+
+/* Flex container for layout */
+.resource-page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Styling for Resource List */
+.resource-list {
+  background-color: #fff; /* White background for the list container */
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for Upload Resource Section */
+.upload-resource {
+  background-color: #fff; /* White background for the upload container */
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .resource-page-content {
+    flex-direction: column;
+  }
+
+  .resource-list,
+  .upload-resource {
+    padding: 1rem;
+  }
+}

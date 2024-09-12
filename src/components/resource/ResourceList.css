@@ -1,0 +1,33 @@
+.resource-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f9f9f9; /* Ensure background is set for better contrast */
+  max-height: 80vh; /* Adjust as needed */
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.resource-card {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  width: calc(33% - 1rem);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.resource-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.resource-details a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.resource-details a:hover {
+  text-decoration: underline;
+}

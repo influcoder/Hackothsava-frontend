@@ -10,6 +10,8 @@ import WhiteBoard from "./components/whiteboard/WhiteBoard";
 import Pod from "./components/pods/Pod";
 import TaskSubmission from "./components/submissions/TaskSubmission";
 import { Slider } from "./components/slider/Slider"; // import your Slider
+import ResourceList from "./components/resource/ResourceList";
+import ResourcePage from "./components/resource/ResourcePage";
 
 const AppContent = () => {
   const location = useLocation();
@@ -28,7 +30,9 @@ const AppContent = () => {
           <Route path="/explore" element={<Explore />} />
           <Route path="/whiteboard" element={<WhiteBoard />} />
           <Route path="/pod" element={<Pod />} />
+
           <Route path="/submission" element={<TaskSubmission />} />
+          <Route path="/resource" element={<ResourcePage />} />
         </Routes>
       </div>
     </div>

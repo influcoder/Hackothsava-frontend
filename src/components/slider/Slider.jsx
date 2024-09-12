@@ -35,14 +35,6 @@ export const Slider = () => {
               <WorkspacesIcon />
             </Link>
           </Tooltip>
-          <Tooltip title="VideoChat" placement="right">
-            <Link to="/call" className="slider-item">
-              <VideoChatIcon />
-            </Link>
-          </Tooltip>
-          <Link to="/submission" className="slider-item">
-            S
-          </Link>
           <Link to="/whiteboard" className="slider-item">
             <DrawIcon />
           </Link>
