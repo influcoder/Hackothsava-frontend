@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
 import { Avatar } from "@mui/material";
 
+// Establish socket connection
 const socket = io("https://hackothsava-server.onrender.com");
 
 export default function ChatContainer({ pod, isOpen }) {
@@ -11,18 +12,26 @@ export default function ChatContainer({ pod, isOpen }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
   const userId = localStorage.getItem("user_id");
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
 
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
-  useEffect(() => {
+  // Function to fetch messages from the server (polling)
+  const fetchMessages = () => {
     if (isOpen && pod?._id) {
       fetch(`${apiGeneral.chats}${pod._id}`)
         .then((response) => response.json())
         .then((data) => {
-          // Ensure data is an array
-          console.log(data);
           if (Array.isArray(data)) {
             setChatMessages(data);
           } else {
@@ -32,17 +41,29 @@ export default function ChatContainer({ pod, isOpen }) {
         })
         .catch((error) => {
           console.error("Error fetching messages:", error);
-          setChatMessages([]); // Ensure fallback to empty array
         });
+    }
+  };
 
+  useEffect(() => {
+    if (isOpen && pod?._id) {
+      // 1. Fetch initial messages
+      fetchMessages();
+
+      // 2. Socket.IO listener for real-time messages
       socket.on("chatMessage", (msg) => {
         if (msg.podId === pod._id) {
           setChatMessages((prevMessages) => [...prevMessages, msg]);
         }
       });
 
+      // 3. Polling mechanism as a fallback (every 10 seconds)
+      const pollingInterval = setInterval(fetchMessages, 10000);
+
+      // Cleanup on component unmount
       return () => {
-        socket.off("chatMessage");
+        clearInterval(pollingInterval);
+        socket.off("chatMessage"); // Remove Socket.IO listener
       };
     }
   }, [isOpen, pod?._id]);
@@ -55,10 +76,13 @@ export default function ChatContainer({ pod, isOpen }) {
         text: chatInput,
       };
 
+      // Emit new message through socket
       socket.emit("chatMessage", newMessage);
 
+      // Add message to the chat locally
       setChatMessages((prevMessages) => [...prevMessages, newMessage]);
 
+      // Send message to the server (for persistence)
       fetch(`${apiGeneral.send}`, {
         method: "POST",
         headers: {
@@ -71,8 +95,8 @@ export default function ChatContainer({ pod, isOpen }) {
         }),
       })
         .then((response) => response.json())
-        .then((data) => {
-          setChatInput("");
+        .then(() => {
+          setChatInput(""); // Clear input field after sending
         })
         .catch((error) => {
           console.error("Error sending message:", error);
@@ -242,7 +266,10 @@ export default function ChatContainer({ pod, isOpen }) {
         ) : (
           <p>No messages found.</p>
         )}
+        {/* Reference to ensure auto-scroll */}
+        <div ref={messagesEndRef}></div>
       </div>
+
       <div className="input-wrapper" style={styles.inputWrapper}>
         <input
           type="text"
