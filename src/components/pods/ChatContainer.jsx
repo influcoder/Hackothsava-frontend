@@ -4,7 +4,7 @@ import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
 import { maxWidth } from "@mui/system";
 
-const socket = io("http://localhost:8000");
+const socket = io("https://hackothsava-server.onrender.com");
 
 export default function ChatContainer({ pod, isOpen }) {
   const [chatInput, setChatInput] = useState("");
@@ -42,7 +42,7 @@ export default function ChatContainer({ pod, isOpen }) {
     if (chatInput.trim()) {
       const newMessage = {
         podId: pod.id,
-        sender: 100,
+        sender: 101,
         text: chatInput,
       };
 
@@ -55,7 +55,7 @@ export default function ChatContainer({ pod, isOpen }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ podId: pod.id, senderId: 100, text: chatInput }),
+        body: JSON.stringify({ podId: pod.id, senderId: 101, text: chatInput }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -82,7 +82,7 @@ export default function ChatContainer({ pod, isOpen }) {
       justifyContent: "space-between",
       height: "100%",
       overflowY: "auto",
-      background: "rgba(0, 0, 0, 0.1)",
+      background: "white",
     },
     input: {
       width: "100%",
@@ -125,7 +125,7 @@ export default function ChatContainer({ pod, isOpen }) {
       maxWidth: "100%",
     },
     chatBubbleSender: {
-      background: "rgba(0, 0, 0, 0.3)",
+      background: "#2d3e54",
     },
     chatBubbleReceiver: {
       background: "rgba(53, 64, 77, 0.45)",
@@ -154,11 +154,11 @@ export default function ChatContainer({ pod, isOpen }) {
     podName: {
       fontSize: "1.2rem",
       fontWeight: "bold",
-      color: "#fff",
+      color: "#2d3e54",
     },
     podDescription: {
       fontSize: "0.9rem",
-      color: "#ddd",
+      color: "#2d3e54",
     },
     inputWrapper: {
       display: "flex",

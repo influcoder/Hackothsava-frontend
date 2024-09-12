@@ -13,8 +13,8 @@ export default function Pod() {
     podContainerStyle: {
       display: "grid",
       gridTemplateColumns: "25% 75%",
-      backgroundColor: "#547788",
-      color: "white",
+      backgroundColor: "white",
+      color: "#2d3e54",
       height: "100vh",
       boxSizing: "border-box",
     },

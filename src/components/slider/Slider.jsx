@@ -6,6 +6,7 @@ import WorkspacesIcon from "@mui/icons-material/Workspaces";
 import ExploreIcon from "@mui/icons-material/Explore";
 import VideoChatIcon from "@mui/icons-material/VideoChat";
 import { Tooltip } from "@mui/material";
+import DrawIcon from "@mui/icons-material/Draw";
 export const Slider = () => {
   return (
     <>
@@ -22,13 +23,13 @@ export const Slider = () => {
               <HomeIcon />
             </Link>
           </Tooltip>
-          <Tooltip title="Explore" placement="right">
+          <Tooltip title="Explore pods" placement="right">
             <Link to="/explore" className="slider-item">
               <ExploreIcon />
             </Link>
           </Tooltip>
           <Tooltip title="Pods" placement="right">
-            <Link to="/pods" className="slider-item">
+            <Link to="/pod" className="slider-item">
               <WorkspacesIcon />
             </Link>
           </Tooltip>
@@ -38,10 +39,10 @@ export const Slider = () => {
             </Link>
           </Tooltip>
           <Link to="/submission" className="slider-item">
-            <VideoChatIcon />
+            S
           </Link>
           <Link to="/whiteboard" className="slider-item">
-            <VideoChatIcon />
+            <DrawIcon />
           </Link>
         </div>
       </div>

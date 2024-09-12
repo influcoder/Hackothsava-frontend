@@ -20,20 +20,10 @@ function Dashboard() {
     <div>
       <div className="dashboard">
         <div className="menu-bar">
-          <div className="menu-item home">Home</div>
-          <div className="menu-item">
-            <Link to="/whiteboard">WhiteBoard</Link>
-          </div>
-          <div className="menu-item">
-            <Link to="/pod">pod</Link>
-          </div>
-          <div className="menu-item">
-            <Link to="/submission">Task</Link>
-          </div>
+          <div></div>
           <div className="menu-right">
             <AddIcon className="menu-item" onClick={handleOpen} />
-
-            <NotificationsIcon className="menu-item" />
+            {/* <NotificationsIcon className="menu-item" /> */}
             <PersonIcon className="menu-item " />
           </div>
         </div>

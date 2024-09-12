@@ -16,3 +16,15 @@
 .slider {
   width: 60px;
 }
+.app-container {
+  display: flex;
+}
+
+.slider {
+  width: 250px; /* Adjust based on your design */
+}
+
+.content {
+  flex-grow: 1;
+  padding-left: 20px; /* Adjust to give space for the slider */
+}
