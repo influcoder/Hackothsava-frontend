@@ -167,29 +167,42 @@ function WhiteBoard() {
     }
   };
 
-  const handleDrawImage = () => {
-    if (image) {
-      const context = contextRef.current;
-      context.drawImage(
-        image,
-        imagePos.x,
-        imagePos.y,
-        imageSize.width,
-        imageSize.height
-      );
-      setImage(null);
-      setHistory([
-        ...history,
-        context.getImageData(
-          0,
-          0,
-          canvasRef.current.width,
-          canvasRef.current.height
-        ),
-      ]);
-      setCurrentStep(history.length);
+  const handleSave = () => {
+    const canvas = canvasRef.current;
+    const confirmation = window.confirm("Are you sure you want to save this?");
+    const id = localStorage.getItem("user_id");
+    if (confirmation) {
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = `${id}-canvas.png`;
+      link.click();
     }
   };
+
+  // const handleDrawImage = () => {
+  //   if (image) {
+  //     const context = contextRef.current;
+  //     context.drawImage(
+  //       image,
+  //       imagePos.x,
+  //       imagePos.y,
+  //       imageSize.width,
+  //       imageSize.height
+  //     );
+  //     setImage(null);
+  //     setHistory([
+  //       ...history,
+  //       context.getImageData(
+  //         0,
+  //         0,
+  //         canvasRef.current.width,
+  //         canvasRef.current.height
+  //       ),
+  //     ]);
+  //     setCurrentStep(history.length);
+  //   }
+  // };
 
   return (
     <div className="container">
@@ -221,7 +234,7 @@ function WhiteBoard() {
         <button className="tool-button" onClick={clearCanvas}>
           <FaTrash />
         </button>
-        <button className="tool-button">
+        <button className="tool-button" onClick={handleSave}>
           <FaSave />
         </button>
       </div>

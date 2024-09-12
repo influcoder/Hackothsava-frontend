@@ -12,6 +12,8 @@ const apiGeneral = {
   taskSubmission: `${domain}/tasks/upload-files`,
   submissions: `${domain}/tasks/get-files`,
   files: `${domain}/files/`,
+
+  userPods: `${domain}/create/userPods/`,
 };
 
 export { apiGeneral };

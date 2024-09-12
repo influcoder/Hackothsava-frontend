@@ -1,3 +1,4 @@
+import { Avatar } from "@mui/material";
 import React from "react";
 
 export default function PodItem({ community, onSelect }) {
@@ -32,21 +33,20 @@ export default function PodItem({ community, onSelect }) {
 
   return (
     <div className="list-item" onClick={onSelect} style={styles.listItem}>
-      <img
-        src={community.profilePhoto}
-        alt={`${community.name} Profile`}
-        className="profile-image"
+      <Avatar
+        src={community.profileImage}
+        alt="Pod Profile"
         style={styles.profileImage}
       />
       <div className="list-item-text" style={styles.listItemText}>
         <span className="list-item-name" style={styles.listItemName}>
-          {community.name}
+          {community.pod_name}
         </span>
         <span
           className="list-item-description"
           style={styles.listItemDescription}
         >
-          {community.description}
+          {community.pod_description}
         </span>
       </div>
     </div>

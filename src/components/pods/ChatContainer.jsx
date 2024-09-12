@@ -3,21 +3,23 @@ import io from "socket.io-client";
 import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
 import { maxWidth } from "@mui/system";
+import { Avatar } from "@mui/material";
 
-const socket = io("http://localhost:8000");
+const socket = io("https://hackothsava-server.onrender.com");
 
 export default function ChatContainer({ pod, isOpen }) {
   const [chatInput, setChatInput] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
+  const userId = localStorage.getItem("user_id");
 
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
 
   useEffect(() => {
-    if (isOpen && pod?.id) {
-      fetch(`${apiGeneral.chats}${pod.id}`)
+    if (isOpen && pod?._id) {
+      fetch(`${apiGeneral.chats}${pod._id}`)
         .then((response) => response.json())
         .then((data) => {
           setChatMessages(data);
@@ -27,7 +29,7 @@ export default function ChatContainer({ pod, isOpen }) {
         });
 
       socket.on("chatMessage", (msg) => {
-        if (msg.podId === pod.id) {
+        if (msg.podId === pod._id) {
           setChatMessages((prevMessages) => [...prevMessages, msg]);
         }
       });
@@ -36,13 +38,13 @@ export default function ChatContainer({ pod, isOpen }) {
         socket.off("chatMessage");
       };
     }
-  }, [isOpen, pod?.id]);
+  }, [isOpen, pod?._id]);
 
   const handleSend = () => {
     if (chatInput.trim()) {
       const newMessage = {
-        podId: pod.id,
-        sender: 100,
+        podId: pod._id,
+        sender: userId,
         text: chatInput,
       };
 
@@ -73,7 +75,7 @@ export default function ChatContainer({ pod, isOpen }) {
     }
   };
 
-  if (!isOpen || !pod || !pod.id) return null;
+  if (!isOpen || !pod || !pod._id) return null;
 
   const styles = {
     chatContainer: {
@@ -184,18 +186,17 @@ export default function ChatContainer({ pod, isOpen }) {
         style={styles.podDetailsContainer}
         onClick={handleProfileClick}
       >
-        <img
+        <Avatar
           src={pod.profilePhoto}
-          alt={`${pod.name} Profile`}
-          className="pod-image"
+          alt="Pod Profile"
           style={styles.podImage}
         />
         <div className="pod-info" style={styles.podInfo}>
           <span className="pod-name" style={styles.podName}>
-            {pod.name}
+            {pod.pod_name}
           </span>
           <span className="pod-description" style={styles.podDescription}>
-            {pod.description}
+            {pod.pod_description}
           </span>
         </div>
       </div>
@@ -204,11 +205,11 @@ export default function ChatContainer({ pod, isOpen }) {
           <div
             key={index}
             className={`chat-message ${
-              message.sender === 100 ? "sender" : "receiver"
+              message.sender === userId ? "sender" : "receiver"
             }`}
             style={{
               ...styles.chatMessage,
-              ...(message.sender === 100
+              ...(message.sender === userId
                 ? styles.chatMessageSender
                 : styles.chatMessageReceiver),
             }}
@@ -217,7 +218,7 @@ export default function ChatContainer({ pod, isOpen }) {
               className="chat-bubble"
               style={{
                 ...styles.chatBubble,
-                ...(message.sender === 100
+                ...(message.sender === userId
                   ? styles.chatBubbleSender
                   : styles.chatBubbleReceiver),
               }}
@@ -240,7 +241,17 @@ export default function ChatContainer({ pod, isOpen }) {
           Send
         </button>
       </div>
-      {isProfileOpen && <Profile />}
+      {isProfileOpen && (
+        <Profile
+          isOpen={isProfileOpen}
+          onClose={handleProfileClick}
+          photo={pod.profilePhoto}
+          name={pod.pod_name}
+          description={pod.pod_description}
+          files={pod.files || 0}
+          links={pod.links || 0}
+        />
+      )}
     </div>
   );
 }

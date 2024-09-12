@@ -1,31 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Drawer, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import PodItem from "./PodItem";
 import "./PodList.css";
+import { apiGeneral } from "../../utils/urls";
+import axios from "axios";
 
 export default function PodList({ onSelectPod }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-
-  const communityList = [
-    {
-      id: 1,
-      name: "Pod 1",
-      description: "Description of pod 1",
-      members: "10",
-      profilePhoto: "https://via.placeholder.com/40",
-    },
-    {
-      id: 2,
-      name: "Pod 2",
-      description: "Description of pod 2",
-      members: "20",
-      profilePhoto: "https://via.placeholder.com/40",
-    },
-    // Add more pods as needed
-  ];
+  const [communityList, setCommunityList] = useState([]); // State to store fetched pods
+  const [loading, setLoading] = useState(true); // For handling loading state
+  const userId = localStorage.getItem("user_id");
 
   const styles = {
     listContainer: {
@@ -62,7 +50,37 @@ export default function PodList({ onSelectPod }) {
       flex: "1",
       cursor: "pointer",
     },
+    noPodsMessage: {
+      textAlign: "center",
+      fontSize: "1rem",
+      color: "#ccc",
+    },
   };
+
+  useEffect(() => {
+    const fetchUserPods = async () => {
+      console.log("Full URL:", `${apiGeneral.userPods}${userId}`);
+      try {
+        const response = await axios.get(`${apiGeneral.userPods}${userId}`);
+        setCommunityList(response.data);
+      } catch (error) {
+        console.error("Error during fetch:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUserPods();
+  }, [userId]);
+
+  // Filtered list based on search query with added checks
+  const filteredCommunityList = searchQuery
+    ? communityList.filter(
+        (community) =>
+          community &&
+          community.pod_name &&
+          community.pod_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : communityList;
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
@@ -93,16 +111,28 @@ export default function PodList({ onSelectPod }) {
           >
             <h4 style={styles.heading}>Pods</h4>
             <div className="input-container" style={styles.inputContainer}>
-              <input type="text" placeholder="Search" style={styles.input} />
+              <input
+                type="text"
+                placeholder="Search"
+                style={styles.input}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
             <div className="community-list" style={styles.list}>
-              {communityList.map((community, index) => (
-                <PodItem
-                  key={index}
-                  community={community}
-                  onSelect={() => onSelectPod(community)}
-                />
-              ))}
+              {filteredCommunityList.length > 0 ? (
+                filteredCommunityList.map((community, index) => (
+                  <PodItem
+                    key={index}
+                    community={community}
+                    onSelect={() => onSelectPod(community)}
+                  />
+                ))
+              ) : (
+                <p style={styles.noPodsMessage}>
+                  {searchQuery ? "No pods found" : "No pods available"}
+                </p>
+              )}
             </div>
           </Drawer>
         </>
@@ -113,16 +143,28 @@ export default function PodList({ onSelectPod }) {
         <div className="list-container" style={styles.listContainer}>
           <h4 style={styles.heading}>Pods</h4>
           <div className="input-container" style={styles.inputContainer}>
-            <input type="text" placeholder="Search" style={styles.input} />
+            <input
+              type="text"
+              placeholder="Search"
+              style={styles.input}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
           <div className="community-list" style={styles.list}>
-            {communityList.map((community, index) => (
-              <PodItem
-                key={index}
-                community={community}
-                onSelect={() => onSelectPod(community)}
-              />
-            ))}
+            {filteredCommunityList.length > 0 ? (
+              filteredCommunityList.map((community, index) => (
+                <PodItem
+                  key={index}
+                  community={community}
+                  onSelect={() => onSelectPod(community)}
+                />
+              ))
+            ) : (
+              <p style={styles.noPodsMessage}>
+                {searchQuery ? "No pods found" : "No pods available"}
+              </p>
+            )}
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React from "react";
+import { Avatar } from "@mui/material";
 
 export default function Profile({
   isOpen,
@@ -6,7 +7,6 @@ export default function Profile({
   photo,
   name,
   description,
-  members,
   files,
   links,
 }) {
@@ -35,6 +35,10 @@ export default function Profile({
       maxWidth: "400px",
       color: "#fff",
       textAlign: "center",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
     },
     closeButton: {
       position: "absolute",
@@ -49,9 +53,8 @@ export default function Profile({
     profileSectionImage: {
       width: "100px",
       height: "100px",
-      borderRadius: "50%",
       marginBottom: "15px",
-      objectFit: "cover",
+      justifyContent: "center",
     },
     profileName: {
       fontSize: "1.5rem",
@@ -65,6 +68,7 @@ export default function Profile({
     fileLinkStyle: {
       display: "flex",
       flexDirection: "row",
+      gap: "30px",
     },
     filesSection: {
       width: "100%",
@@ -115,11 +119,14 @@ export default function Profile({
     <div style={styles.overlay}>
       <div style={styles.popup}>
         <button onClick={onClose} style={styles.closeButton}>
-          <i className="fa fa-times"></i>
+          x
         </button>
-        <img src={photo} alt="Pod Profile" style={styles.profileSectionImage} />
+        <Avatar
+          src={photo}
+          alt="Pod Profile"
+          style={styles.profileSectionImage}
+        />
         <h4 style={styles.profileName}>{name}</h4>
-        <p>{members} members</p>
         <br />
         <p style={styles.profileDescription}>{description}</p>
         <div className="files-links" style={styles.fileLinkStyle}>
