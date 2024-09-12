@@ -12,8 +12,9 @@ const ResourceList = ({ podId }) => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const response = await axios.get(`${apiGeneral.userPods}${podId}`); // Fetch resources using apiGeneral
+        const response = await axios.get(`${apiGeneral.getResources}${podId}`);
         setResources(response.data.resources);
+        console.log("Resources", response.data.resources);
       } catch (error) {
         setError("Error fetching resources");
         console.error("Error fetching resources:", error);
@@ -35,12 +36,6 @@ const ResourceList = ({ podId }) => {
       {resources.length > 0 ? (
         resources.map((resource) => (
           <div className="resource-card" key={resource._id}>
-            <div className="resource-icon">
-              {/* Use appropriate icons based on resource type */}
-              {resource.resource_type === "document" && <FaFile />}
-              {resource.resource_type === "video" && <FaFileVideo />}
-              {resource.resource_type === "link" && <FaLink />}
-            </div>
             <div className="resource-details">
               <h3>{resource.resource_name}</h3>
               <p>{resource.resource_type}</p>

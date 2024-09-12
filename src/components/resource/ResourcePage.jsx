@@ -20,14 +20,14 @@ const ResourcePage = () => {
       <div className="resource-page-content">
         {podId ? (
           <>
-            <div className="resource-list">
-              <ResourceList key={refreshKey} podId={podId} />
-            </div>
             <div className="upload-resource">
               <UploadResource
                 podId={podId}
                 onUploadSuccess={handleUploadSuccess}
               />
+            </div>
+            <div className="resource-list">
+              <ResourceList key={refreshKey} podId={podId} />
             </div>
           </>
         ) : (

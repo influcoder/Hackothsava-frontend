@@ -14,6 +14,8 @@ const apiGeneral = {
   files: `${domain}/files/`,
 
   userPods: `${domain}/create/userPods/`,
+
+  getResources: `${domain}/create/get-resource/`,
 };
 
 export { apiGeneral };

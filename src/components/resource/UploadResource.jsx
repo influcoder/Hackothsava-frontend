@@ -4,38 +4,73 @@ import "./UploadResource.css"; // Ensure you have styles for the component
 
 const UploadResource = ({ podId }) => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [resourceName, setResourceName] = useState("");
+  const [message, setMessage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleUpload = () => {
-    if (!selectedFile) {
-      alert("Please select a file first.");
+  const handleResourceNameChange = (event) => {
+    setResourceName(event.target.value);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !resourceName) {
+      alert("Please complete all fields and select a file.");
       return;
     }
 
     const formData = new FormData();
     formData.append("file", selectedFile);
-    formData.append("title", selectedFile.name); // Adjust based on your requirements
+    formData.append("resource_name", resourceName);
+    formData.append("uploaded_by", localStorage.getItem("user_id")); // Ensure this is passed to the backend
     formData.append("podId", podId);
 
-    axios
-      .post("http://localhost:8000/uploads/resources", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => alert(response.data.message))
-      .catch((error) => console.error("Error uploading file:", error));
+    setIsUploading(true);
+    setMessage("");
+
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/resource-share`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setMessage(`Success: ${response.data.message}`);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setMessage(
+        `Error: ${error.response ? error.response.data.message : error.message}`
+      );
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
     <div className="upload-resource">
+      <h2>Upload Resource</h2>
+      <input
+        type="text"
+        placeholder="Resource Name"
+        value={resourceName}
+        onChange={handleResourceNameChange}
+        className="input-field"
+      />
       <input type="file" onChange={handleFileChange} className="file-input" />
-      <button onClick={handleUpload} className="upload-button">
-        Upload
+      <button
+        onClick={handleUpload}
+        className="upload-button"
+        disabled={isUploading}
+      >
+        {isUploading ? "Uploading..." : "Upload"}
       </button>
+      {message && <p className="message">{message}</p>}
     </div>
   );
 };
