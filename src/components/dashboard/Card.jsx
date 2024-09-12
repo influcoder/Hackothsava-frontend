@@ -1,7 +1,29 @@
 import React from "react";
 import "./Card.css";
-function Card() {
-  return <div className="card-container"></div>;
+import { useNavigate } from "react-router-dom";
+
+function Card({ pod }) {
+  const navigate = useNavigate();
+  if (!pod || !pod.pod_name || !pod.pod_description) {
+    return <div className="error">Invalid pod data</div>; // Handle invalid pod data
+  }
+  const handleOpen = (pod) => {
+    console.log("Card clicked:", pod);
+    navigate("/pod");
+  };
+  console.log(pod);
+  return (
+    <div className="card-container">
+      <h3>{pod.pod_name}</h3>
+      <p className="description">{pod.pod_description}</p>
+      <button
+        style={{ backgroundColor: "#508C9B" }}
+        onClick={() => handleOpen(pod)}
+      >
+        Open
+      </button>
+    </div>
+  );
 }
 
 export default Card;
