@@ -18,17 +18,21 @@ export default function PodList({ onSelectPod }) {
   const styles = {
     listContainer: {
       padding: "20px",
-      background: "rgba(0, 0, 0, 0.2)",
+      background: "#2d3e54",
       textAlign: "left",
       minWidth: "0",
+      paddingLeft: "30px",
       display: "flex",
       flexDirection: "column",
-      backdropFilter: "blur(10px)",
+      boxShadow:
+        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+      // backdropFilter: "blur(10px)",
     },
     heading: {
       marginBottom: "15px",
       fontSize: "1.4rem",
       fontWeight: "500",
+      color: "white",
     },
     inputContainer: {
       position: "relative",
