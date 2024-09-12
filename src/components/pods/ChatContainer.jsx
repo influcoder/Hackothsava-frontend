@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
-import { maxWidth } from "@mui/system";
 import { Avatar } from "@mui/material";
 
 const socket = io("https://hackothsava-server.onrender.com");
@@ -22,10 +21,18 @@ export default function ChatContainer({ pod, isOpen }) {
       fetch(`${apiGeneral.chats}${pod._id}`)
         .then((response) => response.json())
         .then((data) => {
-          setChatMessages(data);
+          // Ensure data is an array
+          console.log(data);
+          if (Array.isArray(data)) {
+            setChatMessages(data);
+          } else {
+            console.error("Expected an array of messages but got:", data);
+            setChatMessages([]);
+          }
         })
         .catch((error) => {
           console.error("Error fetching messages:", error);
+          setChatMessages([]); // Ensure fallback to empty array
         });
 
       socket.on("chatMessage", (msg) => {
@@ -43,8 +50,8 @@ export default function ChatContainer({ pod, isOpen }) {
   const handleSend = () => {
     if (chatInput.trim()) {
       const newMessage = {
-        podId: pod.id,
-        sender: 101,
+        podId: pod._id,
+        sender: userId,
         text: chatInput,
       };
 
@@ -57,7 +64,11 @@ export default function ChatContainer({ pod, isOpen }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ podId: pod.id, senderId: 101, text: chatInput }),
+        body: JSON.stringify({
+          podId: pod._id,
+          senderId: userId,
+          text: chatInput,
+        }),
       })
         .then((response) => response.json())
         .then((data) => {
@@ -201,32 +212,36 @@ export default function ChatContainer({ pod, isOpen }) {
         </div>
       </div>
       <div className="chat-messages" style={styles.chatMessages}>
-        {chatMessages.map((message, index) => (
-          <div
-            key={index}
-            className={`chat-message ${
-              message.sender === userId ? "sender" : "receiver"
-            }`}
-            style={{
-              ...styles.chatMessage,
-              ...(message.sender === userId
-                ? styles.chatMessageSender
-                : styles.chatMessageReceiver),
-            }}
-          >
+        {Array.isArray(chatMessages) ? (
+          chatMessages.map((message, index) => (
             <div
-              className="chat-bubble"
+              key={index}
+              className={`chat-message ${
+                message.sender === userId ? "sender" : "receiver"
+              }`}
               style={{
-                ...styles.chatBubble,
+                ...styles.chatMessage,
                 ...(message.sender === userId
-                  ? styles.chatBubbleSender
-                  : styles.chatBubbleReceiver),
+                  ? styles.chatMessageSender
+                  : styles.chatMessageReceiver),
               }}
             >
-              {message.text}
+              <div
+                className="chat-bubble"
+                style={{
+                  ...styles.chatBubble,
+                  ...(message.sender === userId
+                    ? styles.chatBubbleSender
+                    : styles.chatBubbleReceiver),
+                }}
+              >
+                {message.text}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p>No messages found.</p>
+        )}
       </div>
       <div className="input-wrapper" style={styles.inputWrapper}>
         <input

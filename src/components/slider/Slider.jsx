@@ -13,10 +13,12 @@ export const Slider = () => {
       <div className="slider">
         <div className="sub-slider">
           <div className="slider-item logo">
-            <img
-              src="https://cdn.prod.website-files.com/634f9136f87e0b031ced1baa/63526fd4dc79f1205e5a6196_Logomark%20(1).svg"
-              alt=""
-            />
+            <Link to="/dashboard">
+              <img
+                src="https://cdn.prod.website-files.com/634f9136f87e0b031ced1baa/63526fd4dc79f1205e5a6196_Logomark%20(1).svg"
+                alt=""
+              />
+            </Link>
           </div>
           <Tooltip title="Home" placement="right">
             <Link to="/dashboard" className="slider-item">
