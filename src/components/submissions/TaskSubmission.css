@@ -12,6 +12,9 @@
 }
 
 .task-submission-form h2 {
+  font-size: 30px;
+  font-weight: 400;
+  color: #fff;
   margin-bottom: 50px;
   text-align: center;
 }
@@ -46,6 +49,9 @@
 }
 
 .previous-submissions h3 {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 400;
   margin-bottom: 15px;
   text-align: center;
 }
