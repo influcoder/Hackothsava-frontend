@@ -3,9 +3,11 @@ import io from "socket.io-client";
 import Profile from "./Profile";
 import { apiGeneral } from "../../utils/urls";
 import { Avatar } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
+import PublishIcon from "@mui/icons-material/Publish";
+
 // Establish socket connection
 const socket = io("https://hackothsava-server.onrender.com");
 
@@ -13,6 +15,7 @@ export default function ChatContainer({ pod, isOpen }) {
   const [chatInput, setChatInput] = useState("");
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([]);
+  const [currentPod, setCurrentPod] = useState(null); // State to store pod data
   const userId = localStorage.getItem("user_id");
   const messagesEndRef = useRef(null);
   const navigate = useNavigate(); // Use the navigate hook
@@ -31,9 +34,11 @@ export default function ChatContainer({ pod, isOpen }) {
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
   const handleSubmission = () => {
     navigate2("/submission");
   };
+
   const handleResource = () => {
     navigate("/resource", {
       state: {
@@ -43,7 +48,21 @@ export default function ChatContainer({ pod, isOpen }) {
     }); // Use navigate instead of Navigate
   };
 
-  // Function to fetch messages from the server (polling)
+  // Fetch pod details
+  const fetchPodDetails = () => {
+    if (pod?._id) {
+      fetch(`${apiGeneral.pods}${pod._id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setCurrentPod(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching pod details:", error);
+        });
+    }
+  };
+
+  // Fetch messages from the server (polling)
   const fetchMessages = () => {
     if (isOpen && pod?._id) {
       fetch(`${apiGeneral.chats}${pod._id}`)
@@ -64,17 +83,20 @@ export default function ChatContainer({ pod, isOpen }) {
 
   useEffect(() => {
     if (isOpen && pod?._id) {
-      // 1. Fetch initial messages
+      // Fetch initial messages
       fetchMessages();
 
-      // 2. Socket.IO listener for real-time messages
+      // Fetch pod details
+      fetchPodDetails();
+
+      // Socket.IO listener for real-time messages
       socket.on("chatMessage", (msg) => {
         if (msg.podId === pod._id) {
           setChatMessages((prevMessages) => [...prevMessages, msg]);
         }
       });
 
-      // 3. Polling mechanism as a fallback (every 10 seconds)
+      // Polling mechanism as a fallback (every 10 seconds)
       const pollingInterval = setInterval(fetchMessages, 10000);
 
       // Cleanup on component unmount
@@ -256,11 +278,19 @@ export default function ChatContainer({ pod, isOpen }) {
           >
             <FolderOpenIcon />
           </button>
+          {currentPod && currentPod.createdBy === userId && (
+            <button
+              style={{ backgroundColor: "#2d3e54", padding: "10px" }}
+              onClick={handleSubmission}
+            >
+              Assign
+            </button>
+          )}
           <button
             style={{ backgroundColor: "#2d3e54", padding: "10px" }}
             onClick={handleSubmission}
           >
-            <PlaylistAddCheckIcon />
+            <PublishIcon />
           </button>
         </div>
       </div>
