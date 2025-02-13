@@ -46,6 +46,12 @@ export default function PodItem({ community, onSelect }) {
           className="list-item-description"
           style={styles.listItemDescription}
         >
+          Code:{community.unique_code}
+        </span>
+        <span
+          className="list-item-description"
+          style={styles.listItemDescription}
+        >
           {community.pod_description}
         </span>
       </div>

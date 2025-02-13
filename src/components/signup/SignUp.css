@@ -69,7 +69,15 @@ body {
 .role {
   width: 50%;
 }
-
+.role {
+  width: 50%;
+  height: 50px;
+  align-self: last baseline;
+  border-radius: 6px;
+  border: 1px solid rgba(55, 65, 81, 1);
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #eae6e2;
+}
 .sign-up {
   width: 100%;
   background-color: #bfd0dc;

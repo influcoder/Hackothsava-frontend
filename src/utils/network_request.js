@@ -14,7 +14,6 @@ async function networkRequest(
     ...customHeaders,
   };
 
-  // Don't set Content-Type for file uploads, let browser handle it
   if (isFileUpload) {
     delete headers["Content-Type"];
   } else {
