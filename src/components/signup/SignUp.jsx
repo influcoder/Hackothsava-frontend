@@ -11,7 +11,7 @@ export default function SignUp() {
     last_name: "",
     email: "",
     bday: "",
-    role: "",
+    role: "student", // Default role
     password: "",
     confPassword: "",
   });
@@ -24,7 +24,7 @@ export default function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // Add this to check if all fields are populated
+    console.log("Form Data:", formData);
 
     setLoading(true);
 
@@ -35,25 +35,24 @@ export default function SignUp() {
     }
 
     try {
-      const handleResponse = (responseData) => {
-        setLoading(false);
-        console.log("blahhhh", responseData);
-        alert("added");
-        navigate("/");
-      };
-
-      const formDataToSubmit = new FormData();
-      formDataToSubmit.append("first_name", formData.first_name);
-      formDataToSubmit.append("last_name", formData.last_name);
-      formDataToSubmit.append("email", formData.email);
-      formDataToSubmit.append("role", formData.role);
-      formDataToSubmit.append("password", formData.password);
-
+      // Sending JSON data instead of FormData
       await networkRequest(
         apiGeneral.signup,
-        handleResponse,
+        (responseData) => {
+          setLoading(false);
+          console.log("Response:", responseData);
+          alert("User registered successfully");
+          navigate("/");
+        },
         "post",
-        formDataToSubmit,
+        {
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          email: formData.email,
+          bday: formData.bday,
+          role: formData.role,
+          password: formData.password,
+        },
         {
           headers: {
             "Content-Type": "application/json",
@@ -61,7 +60,8 @@ export default function SignUp() {
         }
       );
     } catch (error) {
-      console.error("Sign-up failed:", error);
+      alert("Sign-up failed. Please try again.");
+      console.error("Sign-up error:", error);
       setLoading(false);
     }
   };
@@ -110,13 +110,12 @@ export default function SignUp() {
               onChange={handleChange}
               required
             />
-
             <select
               className="role"
-              type="text"
               name="role"
               value={formData.role}
               onChange={handleChange}
+              required
             >
               <option value="student">Student</option>
               <option value="teacher">Teacher</option>
